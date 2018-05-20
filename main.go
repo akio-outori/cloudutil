@@ -7,20 +7,32 @@ import (
   "strings"
 )
 
-func main() {
+func printUsage() {
+  flag.PrintDefaults()
+  os.Exit(1)
+}
 
-  stack := flag.String("stack", "", "stack to query")
+func main() {
+  stack   := flag.String("stack", "", "stack to query")
+  command := flag.String("command", "", "action to take")
   flag.Parse()
 
-  if *stack == "" {
-    flag.PrintDefaults()
-    os.Exit(1)
+  switch {
+
+    case *command == "getCurrentStacks":
+      stacks := getCurrentStacks()
+      fmt.Println(strings.Join(stacks[:], "\n"))
+
+    case *command == "getStackStatus": 
+      if *stack != "" {
+        fmt.Println(getStackStatus(*stack))
+      } else {
+        printUsage()
+      }
+
+    default:
+      printUsage()
+
   }
-
-  stacks := getCurrentStacks()
-  fmt.Println(strings.Join(stacks[:], "\n"))
-
-  fmt.Println(getStackStatus(*stack))
-
 }
 
